@@ -1,0 +1,6 @@
+[submodule "fe"]
+	path = fe
+	url = git@github.com:tiborsapi/diyfurniture2025.git
+[submodule "be"]
+	path = be
+	url = git@github.com:tiborsapi/sapifurniture2024.git
