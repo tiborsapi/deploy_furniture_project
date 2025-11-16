@@ -1,0 +1,56 @@
+version: '3.9'
+      
+services:
+  furniture_nginx:
+    build:
+      context: ./docker/nginx
+      dockerfile: Dockerfile
+    container_name: furniture_nginx
+    ports:
+      - "80:4080"
+    depends_on:
+      - furniture_frontend
+      - furniture_backend
+    networks:
+      - furniturenet
+
+  furniture_frontend:
+    build:
+      context: .
+      dockerfile: ./docker/frontend/Dockerfile
+    container_name: furniture_frontend
+    networks:
+      - furniturenet
+
+  furniture_backend:
+    build:
+      context: .
+      dockerfile: ./docker/backend/Dockerfile
+    container_name: furniture_backend
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://furniture_postgres:5432/furniture
+      - SPRING_DATASOURCE_USERNAME=sapi
+      - SPRING_DATASOURCE_PASSWORD=sapi
+      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.postgresql.Driver
+    depends_on:
+      - furniture_postgres
+    networks:
+      - furniturenet
+  furniture_postgres:
+    image: postgres:16
+    container_name: furniture_postgres
+    environment:
+      POSTGRES_USER: sapi
+      POSTGRES_PASSWORD: sapi
+      POSTGRES_DB: furniture
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./docker/postgres:/docker-entrypoint-initdb.d
+    networks:
+      - furniturenet
+
+volumes:
+  pgdata:
+
+networks:
+  furniturenet:
