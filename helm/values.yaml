@@ -1,0 +1,25 @@
+baseDomain: "example.com" # change to your domain
+
+frontend:
+  image: ghcr.io/tiborsapi/furniture-frontend
+  tag: "latest"
+  containerPort: 80
+  replicas: 1
+
+backend:
+  image: ghcr.io/tiborsapi/furniture-backend
+  tag: "latest"
+  containerPort: 3000
+  replicas: 1
+
+# Ingress settings
+ingress:
+  enabled: true
+  className: "nginx" # change if you use a different ingress class
+  tls: false # set true if you use TLS (also add secretName)
+  tlsSecretName: "" # optional: global TLS secret name
+
+podAnnotations: {}
+serviceAnnotations: {}
+
+resources: {}
