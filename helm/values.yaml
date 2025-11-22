@@ -1,4 +1,4 @@
-baseDomain: "example.com" # change to your domain
+baseDomain: "test1.sapi2025.camdvr.org" # change to your subdomain
 
 frontend:
   image: ghcr.io/tiborsapi/furniture-frontend
@@ -15,9 +15,9 @@ backend:
 # Ingress settings
 ingress:
   enabled: true
-  className: "nginx" # change if you use a different ingress class
-  tls: false # set true if you use TLS (also add secretName)
-  tlsSecretName: "" # optional: global TLS secret name
+  className: "nginx"
+  tls: false
+  tlsSecretName: ""
 
 podAnnotations: {}
 serviceAnnotations: {}
