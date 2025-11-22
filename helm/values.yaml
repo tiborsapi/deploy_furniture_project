@@ -7,7 +7,7 @@ frontend:
   replicas: 1
 
 backend:
-  image: ghcr.io/tiborsapi/furniture-backend
+  image: ghcr.io/tiborsapi/diyfurniture-server
   tag: "latest"
   containerPort: 8080
   replicas: 1
@@ -27,7 +27,7 @@ postgres:
 
 imagePullSecrets:
   - name: ghcr
-  
+
 # Ingress settings
 ingress:
   enabled: true
