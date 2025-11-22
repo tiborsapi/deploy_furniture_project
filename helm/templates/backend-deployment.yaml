@@ -22,10 +22,10 @@ spec:
         - containerPort: {{ .Values.backend.containerPort }}
         env:
         - name: DB_HOST
-        value: {{ if .Values.postgres.enabled }}"{{ include "furniture.fullname" . }}-postgres"{{ else }}"postgres"{{ end }}
+          value: {{ if .Values.postgres.enabled }}"{{ include "furniture.fullname" . }}-postgres"{{ else }}"postgres"{{ end }}
         - name: DB_USER
-        value: "{{ .Values.postgres.postgresUser }}"
+          value: "{{ .Values.postgres.postgresUser }}"
         - name: DB_PASS
-        value: "{{ .Values.postgres.postgresPassword }}"
+          value: "{{ .Values.postgres.postgresPassword }}"
         - name: DB_NAME
-        value: "{{ .Values.postgres.postgresDatabase }}"
+          value: "{{ .Values.postgres.postgresDatabase }}"
