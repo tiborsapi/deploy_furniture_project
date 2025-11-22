@@ -1,4 +1,4 @@
-baseDomain: "test1.sapi2025.camdvr.org" # change to your subdomain
+baseDomain: "dev.sapi2025.camdvr.org" # change to your subdomain
 
 frontend:
   image: ghcr.io/tiborsapi/furniture-frontend
