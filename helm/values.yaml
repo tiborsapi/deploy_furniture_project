@@ -13,6 +13,9 @@ backend:
   replicas: 1
 
 postgres:
+  repository: postgres
+  tag: "16"
+  pullPolicy: IfNotPresent
   port: 5432
   enabled: true
   postgresUser: sapi
