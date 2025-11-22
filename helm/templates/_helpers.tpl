@@ -9,7 +9,7 @@
 
 {{- define "furniture.host" -}}
 {{- $base := .Values.baseDomain -}}
-{{- printf "%s-%s.%s" .Release.Name (include "furniture.safeTag") $base -}}
+{{- printf "%s%s.%s" .Release.Name (include "furniture.safeTag" .) $base -}}
 {{- end -}}{{- define "furniture.fullname" -}}
 {{- printf "%s" .Release.Name -}}
 {{- end -}}
