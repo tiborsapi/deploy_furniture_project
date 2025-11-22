@@ -3,14 +3,23 @@ baseDomain: "test1.sapi2025.camdvr.org" # change to your subdomain
 frontend:
   image: ghcr.io/tiborsapi/furniture-frontend
   tag: "latest"
-  containerPort: 80
+  containerPort: 4200
   replicas: 1
 
 backend:
   image: ghcr.io/tiborsapi/furniture-backend
   tag: "latest"
-  containerPort: 3000
+  containerPort: 8080
   replicas: 1
+
+postgres:
+  enabled: true
+  postgresUser: sapi
+  postgresPassword: sapi
+  postgresDatabase: furniture
+  persistence:
+    enabled: true
+    size: 5Gi
 
 # Ingress settings
 ingress:
