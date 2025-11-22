@@ -25,6 +25,9 @@ postgres:
     enabled: true
     size: 5Gi
 
+imagePullSecrets:
+  - name: ghcr
+  
 # Ingress settings
 ingress:
   enabled: true
