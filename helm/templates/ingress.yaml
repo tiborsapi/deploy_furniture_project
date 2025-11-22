@@ -12,7 +12,7 @@ metadata:
 spec:
   rules:
   - host: {{ include "furniture.host" . }}
-    https:
+    http:
       paths:
       - path: /api
         pathType: Prefix
