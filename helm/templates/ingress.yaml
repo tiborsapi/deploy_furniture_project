@@ -27,4 +27,4 @@ spec:
           service:
             name: {{ printf "%s-frontend" (include "furniture.fullname" .) }}
             port:
-              number: 4200
+              number: {{ .Values.frontend.containerPort }}
