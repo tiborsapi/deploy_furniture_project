@@ -12,8 +12,8 @@ selector:
     app: frontend
 template:
   metadata:
-  labels:
-    app: frontend
+    labels:
+      app: frontend
   spec:
     containers:
     - name: frontend
