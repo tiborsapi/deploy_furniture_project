@@ -20,4 +20,12 @@ spec:
         image: "{{ .Values.backend.image }}:{{ .Values.backend.tag }}"
         ports:
         - containerPort: {{ .Values.backend.containerPort }}
-        resources: {{ toYaml .Values.resources | indent 10 }}
+        env:
+        - name: DB_HOST
+        value: {{ if .Values.postgres.enabled }}"{{ include "furniture.fullname" . }}-postgres"{{ else }}"postgres"{{ end }}
+        - name: DB_USER
+        value: "{{ .Values.postgres.postgresUser }}"
+        - name: DB_PASS
+        value: "{{ .Values.postgres.postgresPassword }}"
+        - name: DB_NAME
+        value: "{{ .Values.postgres.postgresDatabase }}"

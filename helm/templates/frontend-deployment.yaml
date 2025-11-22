@@ -7,17 +7,17 @@ metadata:
     app: frontend
 spec:
   replicas: {{ .Values.frontend.replicas }}
-selector:
-  matchLabels:
-    app: frontend
-template:
-  metadata:
-    labels:
+  selector:
+    matchLabels:
       app: frontend
-  spec:
-    containers:
-    - name: frontend
-      image: "{{ .Values.frontend.image }}:{{ .Values.frontend.tag }}"
-      ports:
-        - containerPort: {{ .Values.frontend.containerPort }}
-      resources: {{ toYaml .Values.resources | indent 10 }}
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+      - name: frontend
+        image: "{{ .Values.frontend.image }}:{{ .Values.frontend.tag }}"
+        ports:
+          - containerPort: {{ .Values.frontend.containerPort }}
+        resources: {{ toYaml .Values.resources | indent 10 }}
