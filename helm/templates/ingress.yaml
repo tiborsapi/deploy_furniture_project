@@ -20,11 +20,11 @@ spec:
           service:
             name: {{ printf "%s-backend" (include "furniture.fullname" .) }}
             port:
-            number: 4200
+              number: 4200
       - path: /
         pathType: Prefix
         backend:
           service:
             name: {{ printf "%s-frontend" (include "furniture.fullname" .) }}
             port:
-            number: 4200
+              number: 4200
