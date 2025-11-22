@@ -1,7 +1,7 @@
 baseDomain: "dev.sapi2025.camdvr.org" # change to your subdomain
 
 frontend:
-  image: ghcr.io/tiborsapi/furniture-frontend
+  image: ghcr.io/tiborsapi/diyfurniture-client
   tag: "latest"
   containerPort: 4200
   replicas: 1
