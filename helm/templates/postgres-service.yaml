@@ -8,6 +8,6 @@ spec:
     app: {{ include "furniture.fullname" . }}-postgres
   ports:
     - protocol: TCP
-    port: {{ .Values.service.postgres.port }}
+    port: {{ .Values.postgres.port }}
     targetPort: {{ .Values.service.postgres.port }}
 {{- end }}

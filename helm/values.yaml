@@ -13,6 +13,7 @@ backend:
   replicas: 1
 
 postgres:
+  port: 5432
   enabled: true
   postgresUser: sapi
   postgresPassword: sapi
