@@ -12,19 +12,19 @@ metadata:
 spec:
   rules:
   - host: {{ include "furniture.host" . }}
-    http:
-    paths:
-    - path: /api
-      pathType: Prefix
-      backend:
-        service:
-          name: {{ printf "%s-backend" (include "furniture.fullname" .) }}
-          port:
-          number: 4200
-    - path: /
-      pathType: Prefix
-      backend:
-        service:
-          name: {{ printf "%s-frontend" (include "furniture.fullname" .) }}
-          port:
-          number: 4200
+    https:
+      paths:
+      - path: /api
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ printf "%s-backend" (include "furniture.fullname" .) }}
+            port:
+            number: 4200
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ printf "%s-frontend" (include "furniture.fullname" .) }}
+            port:
+            number: 4200
