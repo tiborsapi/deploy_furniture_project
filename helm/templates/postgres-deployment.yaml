@@ -1,0 +1,39 @@
+{{- if .Values.postgres.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "furniture.fullname" . }}-postgres
+  namespace: {{ .Release.Name }}
+  labels:
+    app: {{ include "furniture.fullname" . }}-postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ include "furniture.fullname" . }}-postgres
+  template:
+    metadata:
+      labels:
+        app: {{ include "furniture.fullname" . }}-postgres
+    spec:
+      containers:
+        - name: postgres
+          image: "{{ .Values.postgres.repository }}:{{ .Values.postgres.tag }}"
+          imagePullPolicy: {{ .Values.postgres.pullPolicy }}
+          env:
+            - name: POSTGRES_USER
+              value: "{{ .Values.postgres.postgresUser }}"
+            - name: POSTGRES_PASSWORD
+              value: "{{ .Values.postgres.postgresPassword }}"
+            - name: POSTGRES_DB
+              value: "{{ .Values.postgres.postgresDatabase }}"
+          ports:
+          - containerPort: {{ .Values.postgres.port }}
+          volumeMounts:
+          - name: postgres-data
+            mountPath: /var/lib/postgresql/data
+      volumes:
+        - name: postgres-data
+          persistentVolumeClaim:
+            claimName: {{ include "furniture.fullname" . }}-postgres-pvc
+{{- end }}
