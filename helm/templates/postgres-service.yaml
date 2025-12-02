@@ -1,0 +1,14 @@
+{{- if .Values.postgres.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "furniture.fullname" . }}-postgres
+  namespace: {{ .Release.Name }}
+spec:
+  selector:
+    app: {{ include "furniture.fullname" . }}-postgres
+  ports:
+    - protocol: TCP
+      port: {{ .Values.postgres.port }}
+      targetPort: {{ .Values.postgres.port }}
+{{- end }}

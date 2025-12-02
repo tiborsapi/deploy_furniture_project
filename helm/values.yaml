@@ -1,0 +1,41 @@
+baseDomain: "dev.sapi2025.camdvr.org" # change to your subdomain
+
+frontend:
+  image: ghcr.io/tiborsapi/diyfurniture-client
+  tag: "latest"
+  containerPort: 80
+  replicas: 1
+
+backend:
+  image: ghcr.io/tiborsapi/diyfurniture-server
+  tag: "latest"
+  containerPort: 8080
+  replicas: 1
+
+postgres:
+  repository: postgres
+  tag: "16"
+  pullPolicy: IfNotPresent
+  port: 5432
+  enabled: true
+  postgresUser: sapi
+  postgresPassword: sapi
+  postgresDatabase: furniture
+  persistence:
+    enabled: true
+    size: 5Gi
+
+imagePullSecrets:
+  - name: ghcr
+
+# Ingress settings
+ingress:
+  enabled: true
+  className: "nginx"
+  tls: false
+  tlsSecretName: ""
+
+podAnnotations: {}
+serviceAnnotations: {}
+
+resources: {}

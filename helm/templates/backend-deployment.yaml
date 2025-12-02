@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ printf "%s-backend" (include "furniture.fullname" .) }}
+  namespace: {{ .Release.Name }}
+  labels:
+    app: backend
+spec:
+  replicas: {{ .Values.backend.replicas }}
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      imagePullSecrets:
+        {{- toYaml .Values.imagePullSecrets | nindent 8 }}
+      containers:
+      - name: backend
+        image: "{{ .Values.backend.image }}:{{ .Values.backend.tag }}"
+        ports:
+        - containerPort: {{ .Values.backend.containerPort }}
+        env:
+        - name: SPRING_DATASOURCE_URL
+          value: {{ if .Values.postgres.enabled }}"jdbc:postgresql://{{ include "furniture.fullname" . }}-postgres:5432/{{ .Values.postgres.postgresDatabase }}"{{ else }}"jdbc:postgresql://postgres:5432/{{ .Values.postgres.postgresDatabase }}"{{ end }}
+        - name: SPRING_DATASOURCE_USERNAME
+          value: "{{ .Values.postgres.postgresUser }}"
+        - name: SPRING_DATASOURCE_PASSWORD
+          value: "{{ .Values.postgres.postgresPassword }}"
