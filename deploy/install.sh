@@ -1,30 +1,52 @@
-for PR in $(gh pr list --repo tiborsapi/deploy_furniture_project --json number --jq '.[].number'); do
-  echo "Processing PR #$PR"
-  
-  MODULES=$(gh pr view $PR --repo tiborsapi/deploy_furniture_project --json files --jq '.tree[] | select(.path=="backend") | .sha' )
+GITHUB_REPO="tiborsapi/deploy_furniture_project"
+WORKDIR="/home/kisstibor/pr"
+STATEFILE="$WORKDIR/deployed_commits.txt"
 
-  echo $MODULES
-  
-  for MODULE in $MODULES; do
-    echo "Module: $MODULE"
-    
-    # Get latest commit for module in PR branch
-    BRANCH=$(gh pr view $PR --repo tiborsapi/deploy_furniture_project --json headRefName --jq '.headRefName')
-    COMMIT_SHA=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
-      https://api.github.com/repos/OWNER/REPO/commits/$BRANCH?path=modules/$MODULE | jq -r '.sha')
-    
-    echo "Latest commit: $COMMIT_SHA"
-    
-    # Find Docker image tag (from workflow runs or GHCR)
-    RUN_JSON=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
-      https://api.github.com/repos/OWNER/REPO/actions/runs?branch=$BRANCH&per_page=100)
-    
-    RUN_ID=$(echo "$RUN_JSON" | jq -r ".workflow_runs[] | select(.head_sha==\"$COMMIT_SHA\") | .id")
-    
-    IMAGE_TAG="$MODULE-$(echo $RUN_ID)"  # adjust if your workflow tags differently
-    echo "Docker image tag: $IMAGE_TAG"
-    
-    # Helm deploy
-    # helm upgrade myapp ./chart --set image.repository=ghcr.io/OWNER/$MODULE --set image.tag=$IMAGE_TAG
-  done
+mkdir -p "$WORKDIR"
+
+for pr in $(gh pr list --repo tiborsapi/deploy_furniture_project --json number --jq '.[].number'); do
+  branch=$(gh pr view $pr --repo tiborsapi/deploy_furniture_project --json headRefName --jq '.headRefName')
+
+  commitbe=$(gh api repos/tiborsapi/deploy_furniture_project/git/trees/$branch \
+           --jq '.tree[] | select(.path=="be") | .sha')
+  commitfe=$(gh api repos/tiborsapi/deploy_furniture_project/git/trees/$branch \
+           --jq '.tree[] | select(.path=="fe") | .sha')
+
+  key="pr-$pr:$commitbe:$commitfe"
+
+  # Check if this commit combo was already deployed
+  if grep -q "$key" "$STATEFILE"; then
+    echo "Skipping PR #$pr (already deployed with backend=$commitbe frontend=$commitfe)"
+    continue
+  fi
+
+  echo "Deploying PR #$pr (backend=$commitbe frontend=$commitfe)"
+
+  # Record deployment
+  echo "$key" >> "$STATEFILE"
+
+  echo "Processing PR #pr-$pr"
+
+  # Create isolated folder for PR
+  PRDIR="$WORKDIR/pr-$pr"
+  rm -Rf "$PRDIR"
+  mkdir -p "$PRDIR"
+  cd "$PRDIR"
+
+  # Fetch PR HEAD
+  git clone "https://github.com/$GITHUB_REPO.git" .
+  git fetch origin pull/$pr/head:pr-$pr
+  git checkout pr-$pr
+
+  echo "Running Helm tests for PR #$PR"
+
+  # Run your Helm commands
+  kubectl delete namespace pr-$pr
+  helm upgrade --install pr-$pr $PRDIR/helm/ --set frontend.tag=$commitfe --set backend.tag=$commitbe
+  kubectl create secret docker-registry ghcr --docker-server=ghcr.io --docker-username=tiborsapi --docker-password="$(cat ~/.github_token)" --docker-email="kiss.tibor@ms.sapientia.ro" -n pr-$pr
+
+  # Run helm test
+  # helm test pr-$pr --namespace pr-$pr
+
+  gh issue comment $pr --repo "$GITHUB_REPO" --body "Helm deployment ran successfully for PR #pr-$pr URL backend: https://pr-$pr.dev.sapi2025.camdvr.org:9914/api/furniture/all URL frontend: https://pr-$pr.dev.sapi2025.camdvr.org:9914/"
 done
