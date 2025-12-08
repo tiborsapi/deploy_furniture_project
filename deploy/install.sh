@@ -14,6 +14,19 @@ for pr in $(gh pr list --repo tiborsapi/deploy_furniture_project --json number -
   commitfe=$(gh api repos/tiborsapi/deploy_furniture_project/git/trees/$branch \
            --jq '.tree[] | select(.path=="fe") | .sha')
 
+
+  docker manifest inspect ghcr.io/tiborsapi/diyfurniture-server:$commitbe > /dev/null 2>&1
+  if [ $? -ne 0 ]; then
+    echo "Backend docker image $commitbe not found, skipping PR #pr-$pr"
+    continue
+  fi
+
+  docker manifest inspect ghcr.io/tiborsapi/diyfurniture-client:$commitfe > /dev/null 2>&1
+  if [ $? -ne 0 ]; then
+    echo "Frontend docker image $commitfe not found, skipping PR #pr-$pr"
+    continue
+  fi
+
   key="pr-$pr:$commitbe:$commitfe"
 
   # Check if this commit combo was already deployed
