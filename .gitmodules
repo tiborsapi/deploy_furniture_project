@@ -1,6 +1,6 @@
 [submodule "fe"]
 	path = fe
-	url = git@github.com:tiborsapi/diyfurniture2025.git
+	url = git@github.com:simonaron1111/diyfurniture2025.git
 [submodule "be"]
 	path = be
-	url = git@github.com:tiborsapi/sapifurniture2024.git
+	url = git@github.com:simonaron1111/sapifurniture2024.git
